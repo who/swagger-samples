@@ -16,7 +16,10 @@
 
 package io.swagger.sample.data;
 
+import io.swagger.sample.model.AbstractPet;
 import io.swagger.sample.model.Category;
+import io.swagger.sample.model.ConcreteCat;
+import io.swagger.sample.model.ConcreteDog;
 import io.swagger.sample.model.Pet;
 import io.swagger.sample.model.Tag;
 
@@ -111,6 +114,25 @@ public class PetData {
       }
     }
     return result;
+  }
+  
+  public Pet concretePetFactory(AbstractPet abstractPet) throws Exception {
+      Pet newPet = new Pet();
+      Category category = new Category();
+
+      if (abstractPet instanceof ConcreteDog) {
+        category.setName("concreteDog");
+        newPet.setCategory(category);
+        newPet.setName("Max ConcreteDog");
+        return addPet(newPet);
+      } else if (abstractPet instanceof ConcreteCat) {
+        category.setName("concreteCat");
+        newPet.setCategory(category);
+        newPet.setName("Felix ConcreteCat");
+        return addPet(newPet);
+      }
+      
+      throw new Exception("Uhoh. concretePetFactory was't invoked with a valid concrete type");
   }
 
   public Pet addPet(Pet pet) {

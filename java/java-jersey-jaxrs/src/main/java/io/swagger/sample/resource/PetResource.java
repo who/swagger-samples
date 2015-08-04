@@ -24,6 +24,7 @@ import io.swagger.sample.exception.NotFoundException;
 
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataParam;
+import io.swagger.sample.model.AbstractPet;
 
 import org.apache.commons.io.IOUtils;
 
@@ -116,6 +117,22 @@ public class PetResource {
       @ApiParam(value = "Pet object that needs to be added to the store", required = true) Pet pet) {
     Pet updatedPet = petData.addPet(pet);
     return Response.ok().entity(updatedPet).build();
+  }
+
+  @POST
+  @Path("/abstract")
+  @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+  @ApiOperation(value = "Add a new abstract pet to the store")
+  @ApiResponses(value = { @ApiResponse(code = 405, message = "Invalid input") })
+  public Response addAbstractPet(
+      @ApiParam(value = "Pet object that needs to be added to the store", required = true) AbstractPet pet) {
+      Pet thePet = new Pet();
+      try {
+          thePet = petData.concretePetFactory(pet);
+      } catch (Exception e) {
+          Response.status(405).entity(e.getMessage()).build();
+      }
+    return Response.ok().entity(thePet).build();
   }
 
   @PUT
